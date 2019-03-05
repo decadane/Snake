@@ -11,6 +11,7 @@ public class SnakeGame extends JFrame {
     private JPanel panel;
     private Field field;
     private Snake snake;
+    private GameState gs;
 
     private final int ROWS = 20;
     private final int COLS = 20;
@@ -25,10 +26,40 @@ public class SnakeGame extends JFrame {
         setImages();
         initPanel();
         initFrame();
+        gs = GameState.GAME;
         game();
     }
 
     private void initFrame() {
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                switch (e.getKeyChar()) {
+                    case 'w':
+                        if (snake.getDir() != Direction.DOWN) snake.setDir(Direction.TOP);
+                        break;
+                    case 's':
+                        if (snake.getDir() != Direction.TOP) snake.setDir(Direction.DOWN);
+                        break;
+                    case 'd':
+                        if (snake.getDir() != Direction.LEFT) snake.setDir(Direction.RIGHT);
+                        break;
+                    case 'a':
+                        if (snake.getDir() != Direction.RIGHT) snake.setDir(Direction.LEFT);
+                        break;
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
          setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
          setTitle("Snake");
          setIconImage(getImage("icon"));
@@ -49,31 +80,6 @@ public class SnakeGame extends JFrame {
                 }
             }
         };
-        panel.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                switch (e.getKeyChar()) {
-                    case 'w':
-                        snake.setDir(Direction.TOP);
-                    case 's':
-                        snake.setDir(Direction.DOWN);
-                    case 'd':
-                        snake.setDir(Direction.RIGHT);
-                    case 'a':
-                        snake.setDir(Direction.LEFT);
-                }
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
         panel.setPreferredSize(new Dimension(Ranges.getSize().x * IMAGE_SIZE,
                 Ranges.getSize().y * IMAGE_SIZE));
         add(panel);
@@ -98,12 +104,16 @@ public class SnakeGame extends JFrame {
     }
 
     private void game() {
-        while (true) {
-            snake.move(field);
+        while (gs == GameState.GAME) {
+            field.createFood();
+            if (!snake.move(field)) {
+                gs = GameState.FAIL;
+                break;
+            }
             snake.printSnake(field);
             panel.repaint();
             try {
-                Thread.sleep(300);
+                Thread.sleep(200);
             }
             catch (InterruptedException t) {
                 t = null;

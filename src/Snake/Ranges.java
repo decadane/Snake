@@ -24,4 +24,8 @@ public class Ranges {
     public static Coords getSize() {
         return size;
     }
+
+    public static boolean inRange(Coords coords) {
+        return coords.x >= 0 && coords.x < size.x && coords.y >= 0 && coords.y < size.y;
+    }
 }
