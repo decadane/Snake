@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 public class SnakeGame extends JFrame {
 
     private JPanel panel;
+    private JLabel label;
     private Field field;
     private Snake snake;
     private GameState gs;
@@ -24,9 +25,10 @@ public class SnakeGame extends JFrame {
     SnakeGame() {
         start();
         setImages();
+        gs = GameState.GAME;
+        initLabel();
         initPanel();
         initFrame();
-        gs = GameState.GAME;
         game();
     }
 
@@ -69,6 +71,11 @@ public class SnakeGame extends JFrame {
          setLocationRelativeTo(null);
     }
 
+    private void initLabel() {
+        label = new JLabel("Welcome!");
+        add(label, BorderLayout.SOUTH);
+    }
+
     private void initPanel() {
         panel = new JPanel() {
             @Override
@@ -105,9 +112,10 @@ public class SnakeGame extends JFrame {
 
     private void game() {
         while (gs == GameState.GAME) {
+            label.setText(setMessage());
             field.createFood();
             if (!snake.move(field)) {
-                gs = GameState.FAIL;
+                gs = GameState.END;
                 break;
             }
             snake.printSnake(field);
@@ -119,5 +127,14 @@ public class SnakeGame extends JFrame {
                 t = null;
             }
         }
+        label.setText(setMessage());
+    }
+
+    private String setMessage() {
+        switch (gs) {
+            case GAME: return("Your score: " + (snake.getLength() - 3));
+            case END: return ("The game is end! Your score: " + (snake.getLength() - 3));
+        }
+        return null;
     }
 }

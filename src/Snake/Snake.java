@@ -59,7 +59,6 @@ public class Snake {
         if (Ranges.inRange(head) && field.getBox(head) == Box.EAT) {
             eatFlag = true;
             field.setPlaceFood(false);
-            length++;
         };
         return Ranges.inRange(head) && field.getBox(head) != Box.SNAKE;
     }
@@ -70,5 +69,9 @@ public class Snake {
 
     public Direction getDir() {
         return trueDir;
+    }
+
+    public int getLength() {
+        return length;
     }
 }
